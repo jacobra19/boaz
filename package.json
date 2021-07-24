@@ -1,0 +1,44 @@
+{
+    "name": "boaz",
+    "version": "1.0.0",
+    "description": "Chrome extension that fetches external libraries and assigning them to the window object",
+    "main": "index.js",
+    "scripts": {
+        "watch": "webpack --config webpack/webpack.dev.js --watch",
+        "build": "webpack --config webpack/webpack.prod.js",
+        "clean": "rimraf dist",
+        "test": "npx jest",
+        "style": "prettier --write \"src/**/*.{ts,tsx}\""
+    },
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jacobra19/boaz.git"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.12.2",
+        "lodash": "^4.17.21",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "@types/chrome": "0.0.143",
+        "@types/jest": "^25.1.4",
+        "@types/jquery": "^3.3.33",
+        "@types/lodash": "^4.14.171",
+        "@types/react": "^17.0.0",
+        "@types/react-dom": "^17.0.0",
+        "copy-webpack-plugin": "^6.1.0",
+        "glob": "^7.1.6",
+        "jest": "^26.6.3",
+        "prettier": "^2.2.1",
+        "rimraf": "^3.0.2 ",
+        "ts-jest": "^25.2.1 ",
+        "ts-loader": "^6.2.1",
+        "typescript": "~3.8.3 ",
+        "webpack": "^4.44.1",
+        "webpack-cli": "~3.3.11",
+        "webpack-merge": "~4.2.2"
+    }
+}

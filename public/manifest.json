@@ -1,0 +1,40 @@
+{
+    "manifest_version": 2,
+    "name": "Boaz",
+    "description": "Chrome extension that fetches external libraries and assigning them to the window object",
+    "version": "1.0",
+    "icons": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "js/vendor.js",
+                "js/content_script.js"
+            ]
+        }
+    ],
+    "background": {
+        "scripts": [
+            "js/vendor.js",
+            "js/background.js"
+        ]
+    },
+    "permissions": [
+        "storage",
+        "<all_urls>"
+    ]
+}
