@@ -20,17 +20,42 @@ const PACKAGES = [
 
 const App = () => {
 	const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
-    // TODO: finish injecting packages into the app
-    const getData = async () => {
-        setIsLoading(true);
-		let lodashCDN = 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js';
+	// TODO: finish injecting packages into the app
+	const getData = async () => {
+		setIsLoading(true);
 
-		let data = await fetch(lodashCDN);
-		console.log('data :>> ', data);
-		let texted = await data.text();
-		console.log('texted :>> ', texted);
+		const getCDNLink = (name: string, version: string): string => {
+			return `https://cdn.jsdelivr.net/npm/${name}@${version}/${name}.min.js`;
+		};
+
+		chrome.tabs.query(
+			{ active: true, currentWindow: true },
+			function (tabs) {
+				const tab = tabs[0];
+				let CDNs = selectedPackages.map((name) => {
+					return getCDNLink(
+						name,
+						PACKAGES.filter((p) => p.name === name)[0].version
+					);
+				});
+				if (tab.id) {
+					chrome.tabs.sendMessage(
+						tab.id,
+						{
+							CDNs,
+						},
+						(msg) => {
+							setTimeout(() => {
+								setIsLoading(false);
+							}, 1000);
+							console.log('result message:', msg);
+						}
+					);
+				}
+			}
+		);
 	};
 
 	const handleInputChange = ({
@@ -50,7 +75,7 @@ const App = () => {
 	};
 
 	return (
-		<div style={{ minWidth: 300, height: 500 }}>
+		<div style={{ minWidth: 300, height: '100%' }}>
 			<TitleBar title='Boaz - window CDN injector' />
 			<div
 				style={{
@@ -70,7 +95,11 @@ const App = () => {
 						/>
 					);
 				})}
-                <ActionButton onClick={getData} isLoading={isLoading}/>
+				<ActionButton
+					onClick={getData}
+					isLoading={isLoading}
+					isDisabled={!selectedPackages.length}
+				/>
 			</div>
 		</div>
 	);
