@@ -1,61 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { AppBar, TextField } from '@material-ui/core';
+import React, { useState } from 'react';
+import { TitleBar, PackageRow, ActionButton } from './components';
 
-interface InputRowProps {
-	label: string;
-	link: string;
-}
+const CDN_URL = 'https://cdn.jsdelivr.net/npm/package@version/package.js';
 
-const InputRow = (props: InputRowProps) => {
-	return (
-		<div>
-			<TextField id='standard-basic' label='Label' value={props.label} />
-			<TextField
-				id='standard-basic'
-				label='CDN link'
-				value={props.link}
-			/>
-		</div>
-	);
-};
+const PACKAGES = [
+	{
+		name: 'lodash',
+		version: '4.17.21',
+	},
+	{
+		name: 'moment',
+		version: '2.29.1',
+	},
+	{
+		name: 'dayjs',
+		version: '1.10.6',
+	},
+];
 
 const App = () => {
-	const [CDNs, setCDNs] = useState([
-		{ label: 'lodash', link: 'www.blabla.com' },
-	]);
+	const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
-		chrome.browserAction.onClicked.addListener(function (tab) {
-			console.log('tab :>> ', tab);
-            alert('icon clicked');
-		});
-	}, []);
+    // TODO: finish injecting packages into the app
+    const getData = async () => {
+        setIsLoading(true);
+		let lodashCDN = 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js';
+
+		let data = await fetch(lodashCDN);
+		console.log('data :>> ', data);
+		let texted = await data.text();
+		console.log('texted :>> ', texted);
+	};
+
+	const handleInputChange = ({
+		name,
+		isChecked,
+	}: {
+		name: string;
+		isChecked: boolean;
+	}) => {
+		if (selectedPackages.indexOf(name) === -1 && isChecked) {
+			setSelectedPackages((prevState) => [...prevState, name]);
+		} else {
+			setSelectedPackages((prevState) => [
+				...prevState.filter((x) => x !== name),
+			]);
+		}
+	};
 
 	return (
 		<div style={{ minWidth: 300, height: 500 }}>
-			<AppBar
-				position={'static'}
-				style={{
-					height: 40,
-					padding: 10,
-					fontWeight: 500,
-					fontSize: 15,
-				}}
-			>
-				Boaz - window CDN injector
-			</AppBar>
+			<TitleBar title='Boaz - window CDN injector' />
 			<div
 				style={{
 					display: 'flex',
-					alignItems: 'center',
 					flexDirection: 'column',
 					padding: 10,
 					fontSize: 14,
 				}}
 			>
-				{CDNs.map((cdn,idx) => {
-					return <InputRow key={idx} label={cdn.label} link={cdn.link} />;
+				{PACKAGES.map(({ name, version }, idx) => {
+					return (
+						<PackageRow
+							key={idx}
+							name={name}
+							version={version}
+							onChange={handleInputChange}
+						/>
+					);
 				})}
+                <ActionButton onClick={getData} isLoading={isLoading}/>
 			</div>
 		</div>
 	);
